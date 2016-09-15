@@ -1,0 +1,21 @@
+package sockets_guiada;
+import java.net.*;
+/*
+ * logica de conexion y recepcion de peticiones
+ */
+public class ServidorConcurrente {
+	/*
+	 * @param args
+	 */
+	
+	public static void main(String[] args) {
+		String puerto = "";
+		System.out.print("Hello Moto");
+		
+		try {
+			
+		} catch (Exception e) {
+			System.out.println("Error: " + e.toString());
+		}
+	}
+}
