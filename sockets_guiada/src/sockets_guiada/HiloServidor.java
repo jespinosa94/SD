@@ -21,9 +21,58 @@ public class HiloServidor extends Thread {
 	public String leeSocket(Socket p_sk, String p_Datos) {
 		try {
 			InputStream aux = p_sk.getInputStream();
+			DataInputStream flujo = new DataInputStream(aux);
+			p_Datos = new String();
+			p_Datos = flujo.readUTF();
 		} catch (Exception e) {
 			System.out.println("Error" + e.toString());
 		}
 		return p_Datos;
+	}
+	
+	/*
+	 * Escribe en el socket del cliente. Devuelve en nº de bytes escritos
+	 * -1 error
+	 */
+	
+	public void escribeSocket(Socket p_sk, String p_Datos) {
+		try {
+			OutputStream aux = p_sk.getOutputStream();
+			DataOutputStream flujo = new DataOutputStream(aux);
+			flujo.writeUTF(p_Datos);
+		} catch (Exception e) {
+			System.out.println("Error: " + e.toString());
+		}
+	}
+	
+	public String anyadirMarca(int codigoMarca, String modeloCoche) {
+		String nombreVenta = "";
+		switch (codigoMarca) {
+		case 0: nombreVenta = "El modelo " + modeloCoche + " no tiene una marca asociada";
+		case 1: nombreVenta = "Ferrari " + modeloCoche;
+		case 2: nombreVenta = "Tesla " + modeloCoche;
+		case 3: nombreVenta = "Audi " + modeloCoche;
+		default: nombreVenta = "-1";
+		}
+		return nombreVenta;
+	}
+	
+	public void run() {
+		String nombreVenta = "";
+		String cadena = "";
+		try {
+			while(nombreVenta != "-1") {
+				cadena = this.leeSocket(skCliente, cadena);
+				/*
+				 * Escritura en pantalla de la informacion recibida del cliente
+				 */
+				nombreVenta = this.anyadirMarca(2, cadena);
+				cadena = "" + nombreVenta;
+				this.escribeSocket(skCliente, cadena);
+			}
+			skCliente.close();
+		} catch(Exception e) {
+			System.out.println("Error: " + e.toString());
+		}
 	}
 }
