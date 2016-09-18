@@ -24,7 +24,7 @@ public class Cliente {
 		}
 	}
 	
-	public String pedirMarca(int anyadeMarca, String p_resultado, String p_Cadena, Socket p_socket_Con_Servidor) {
+	public String pedirMarca(String p_operacion, String p_resultado, String p_Cadena, Socket p_socket_Con_Servidor) {
 		InputStreamReader isr = new InputStreamReader(System.in);
 		BufferedReader br = new BufferedReader(isr);
 		int op = 0;
@@ -33,7 +33,7 @@ public class Cliente {
 			System.out.println("Introduzca la marca: ");
 			op = Integer.parseInt(br.readLine());
 			
-			p_Cadena = anyadeMarca + ", " + op;
+			p_Cadena = p_operacion + ", " + op;
 			escribeSocket(p_socket_Con_Servidor, p_Cadena);
 			p_Cadena = "";
 			p_Cadena = leeSocket(p_socket_Con_Servidor, p_Cadena);
@@ -43,7 +43,7 @@ public class Cliente {
 			System.out.println("Error: " + e.toString());
 		}
 		
-		return p_resultado;
+		return "";
 	}
 	
 	public void pedirMarca(String p_host, String p_puerto) {
@@ -62,7 +62,7 @@ public class Cliente {
 				System.out.println("[2] Tesla");
 				System.out.println("Opcion: ");
 				anyadeMarca = Integer.parseInt(br.readLine());
-				resultado = pedirMarca(anyadeMarca, resultado, Cadena, skCliente);
+				resultado = pedirMarca(resultado, anyadeMarca, Cadena, skCliente);
 				
 				while (resp != 's' && resp != 'n') {
 					System.out.println("El resultado es: " + resultado);
@@ -94,7 +94,7 @@ public class Cliente {
 	public void menu(String p_host, String p_puerto) {
 		int opcion = 0;
 		try {
-			while(opcion != 1 && opcion != 2) {
+			while(opc != 1 && opc != 2) {
 				System.out.println("[1] Enviar marca de coche");
 				System.out.println("[2] Salir");
 				System.out.print("Opcion: ");

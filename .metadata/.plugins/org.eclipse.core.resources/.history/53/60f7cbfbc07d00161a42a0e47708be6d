@@ -94,7 +94,7 @@ public class Cliente {
 	public void menu(String p_host, String p_puerto) {
 		int opcion = 0;
 		try {
-			while(opcion != 1 && opcion != 2) {
+			while(opc != 1 && opc != 2) {
 				System.out.println("[1] Enviar marca de coche");
 				System.out.println("[2] Salir");
 				System.out.print("Opcion: ");
