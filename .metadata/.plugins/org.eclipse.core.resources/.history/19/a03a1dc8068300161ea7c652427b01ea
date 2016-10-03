@@ -1,6 +1,0 @@
-package rmi_guiada;
-import java.rmi.Remote;
-
-public class RemoteInterface extends Remote {
-
-}
