@@ -1,5 +1,6 @@
 package servidor;
 import java.net.*;
+import java.util.Set;
 
 /*
  * Método de llamada al servidor: [Puerto de escucha servidor], [IP del controlador], 
@@ -10,27 +11,37 @@ public class ServidorConcurrente {
 	 * @param args
 	 */
 	@SuppressWarnings("resource")
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ConnectException {
 		String puerto = "";
+		int conexionesMax, conexionesActuales = 0;
 		
 		try {
-			if(args.length == 1) {
+			if(args.length == 2) {
+				//Conexiones con el hilo
 				puerto = args[0];
+				conexionesMax = Integer.parseInt(args[1]);
 				ServerSocket skServidor = new ServerSocket(Integer.parseInt(puerto));
-				System.out.println("Servidor escuchando en el puerto " + puerto);
-				/*
-				 * Mantenimiento de la conexión con el cliente
-				 */
+				System.out.println("Portal abierto: Escuchando en el puerto: " + puerto);
+				
+				//Comunicación con el cliente
 				for(;;) {
-					//Crea el objeto y espera a que el cliente crea conectarse
-					Socket skCliente = skServidor.accept(); 
-					System.out.println("Sirviendo al cliente...");
-					Thread t = new HiloServidor(skCliente);
-					t.start();
+					//A la espera de que un cliente quiera conectarse
+					if(conexionesActuales <= conexionesMax) {
+						Socket skCliente = skServidor.accept();
+						System.out.println("El portal ha sido atravesado: Sirviendo al cliente...");
+						Thread t = new HiloServidor(skCliente, conexionesActuales);
+						t.start();	
+						conexionesActuales += 1;
+						System.out.println("[" + conexionesActuales + "]");
+					} else {
+						System.out.println("Error: connection refused, intente conectar de nuevo en unos instantes");
+						throw new ConnectException();
+					}
 				}
 			} else {
-//				//Creación del recurso por defecto de index.html?
-				System.out.println("Método de llamada al servidor: [Puerto de escucha servidor], [IP del controlador], [Puerto del controlador], [Nº de conexiones simultaneas]");
+				System.out.println("Debe indicar el puerto de escucha del servidor y"
+									+ " el numero de conexiones simultaneas permitidas");
+				System.out.println("Formato: $./Servidor [puerto_servidor] [nº_conexiones]");
 				System.exit(1);
 			}
 		} catch(Exception e){
