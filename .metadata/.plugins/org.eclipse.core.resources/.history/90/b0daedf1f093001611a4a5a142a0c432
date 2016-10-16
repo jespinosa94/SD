@@ -1,0 +1,37 @@
+import java.io.Serializable;
+import java.rmi.RemoteException;
+import java.sql.Time;
+
+public class ObjetoSensor implements InterfazSensor, Serializable {
+
+	@Override
+	public int GetVolumen() throws RemoteException {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public Time GetFechaActual() throws RemoteException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Time GetFechaUltimoCambio() throws RemoteException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int GetLED() throws RemoteException {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void SetLED(int valor) {
+		// TODO Auto-generated method stub
+
+	}
+
+}
