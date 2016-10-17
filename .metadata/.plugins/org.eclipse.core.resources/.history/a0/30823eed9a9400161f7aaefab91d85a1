@@ -31,7 +31,7 @@ public class ServidorConcurrente {
 						Thread t = new HiloServidor(skCliente, conexionesActuales);
 						t.start();
 						conexionesActuales += 1;
-//d						System.out.println("[" + conexionesActuales + "]");
+						System.out.println("[" + conexionesActuales + "]");
 					} else {
 						System.out.println("Error: connection refused, intente conectar de nuevo en unos instantes");
 						throw new ConnectException();

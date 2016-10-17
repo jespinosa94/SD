@@ -2,8 +2,8 @@ import java.net.*;
 import java.util.Set;
 
 /*
- * Metodo de llamada al servidor: [Puerto de escucha servidor], [IP del controlador],
- * [Puerto del controlador], [Num de conexiones simultaneas]
+ * M�todo de llamada al servidor: [Puerto de escucha servidor], [IP del controlador],
+ * [Puerto del controlador], [N� de conexiones simultaneas]
  */
 public class ServidorConcurrente {
 	/**
@@ -31,7 +31,7 @@ public class ServidorConcurrente {
 						Thread t = new HiloServidor(skCliente, conexionesActuales);
 						t.start();
 						conexionesActuales += 1;
-//d						System.out.println("[" + conexionesActuales + "]");
+						System.out.println("[" + conexionesActuales + "]");
 					} else {
 						System.out.println("Error: connection refused, intente conectar de nuevo en unos instantes");
 						throw new ConnectException();
@@ -43,7 +43,7 @@ public class ServidorConcurrente {
 									+ " puerto de escucha del controlador y"
 									+ " el numero de conexiones simultaneas permitidas"
 									);
-				System.out.println("Formato: $./Servidor [puerto_servidor] [IP del controlador] [Puerto de escucha del controlador] [num_conexiones]");
+				System.out.println("Formato: $./Servidor [puerto_servidor] [n�_conexiones]");
 				System.exit(1);
 			}
 		} catch(Exception e){
