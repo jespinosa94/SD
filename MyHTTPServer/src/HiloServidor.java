@@ -4,12 +4,15 @@ import java.io.*;
 
 public class HiloServidor extends Thread {
 	private Socket skCliente;
-	private int conexionesActuales;
-
-	public HiloServidor(Socket p_cliente, int conexionesActuales) {
+	private String IpController;
+	private int PuertoController;
+	
+	public HiloServidor(Socket p_cliente, String IpController, String PuertoController) {
 		this.skCliente = p_cliente;
-		this.conexionesActuales = conexionesActuales;
+		this.IpController = IpController;
+		this.PuertoController = Integer.parseInt(PuertoController);
 	}
+
 
 	public String leeSocket(Socket p_sk, String p_Datos) {
 		try {
@@ -36,17 +39,80 @@ public class HiloServidor extends Thread {
 		}
 		return;
 	}
+	
+	private String ConectaController(String peticionController) {
+		/*
+		 * Recibe cadena en la forma: "/controladorSD/volumen?Sonda=1"
+		 * hay que procesarla y conectar con el controlador
+		 */
+		String resultado = "";
+		try {
+			Socket skControlador = new Socket(IpController, PuertoController);
+			escribeSocket(skControlador, peticionController);
+			resultado = leeSocket(skControlador, peticionController);
+			skControlador.close();
+		} catch(Exception e) {
+			System.out.println("Error: " + e.toString());
+		}
 
-	public String procesaCadena(String Cadena) {
-		return "";
+		return resultado;
 	}
+	
+	public String leerArchivo(String s) {
+		String lectura = "";
+		File fichero = new File(System.getProperty("user.dir") + "//resources" + s); //Obtiene la ruta del fichero
+		try {
+			FileReader fr = new FileReader(fichero);
+			BufferedReader br = new BufferedReader(fr);
+			String linea;
+			while((linea = br.readLine()) != null) {
+				lectura += linea;
+			}
+			fr.close();
+			br.close();
+			String aux = lectura;
+			lectura = "HTTP/1.1 200 OKi\r\n" + "Content-Type: text/html\r\n" + "\r\n\r\n" + aux + "\r\n";
+		} catch(Exception e) {
+			lectura = "HTTP/1.1 404 File not found\r\n" + "Content-Type: text/html\r\n" + "\r\n\r\n" + leerArchivo("/404.html").substring(45); //substring quita la cadena de encontrado del archivo 404
+		}
+		
+		return lectura;
+	}
+	
+	public String procesaCadena(String Cadena) {
+		String[] s = Cadena.split(" ");
+		String resultado = "";
+		
+		if (s[0].equals("GET")) {
+//d			System.out.println("(" + s[1].toString() + ")");
+			if(s[1].contains("controladorSD")) {
+				resultado = ConectaController(s[1]);
+			} 
+			else if(s[1].equals("/")){	//La llamada con unicamente puerto e ip produce esta salida
+				resultado = leerArchivo("/index.html");
+			} 
+			else {	//lectura de cualquier otro archivo
+				resultado = leerArchivo(s[1]) ;
+			}
+		} else {
+			try {
+				this.escribeSocket(skCliente, "HTTP/1.1 405 Method Not Allowed\r\n" + "Content-Type: text/html\r\n" + "\r\n\r\n" + leerArchivo("/405.html") + "\r\n");
+				skCliente.close();
+			} catch(Exception e) {
+				System.out.println("Error: " + e.toString());
+			}
+		}
+		
+		
+		return resultado;
+	}
+
 
 	public void run() {
 		String Cadena = "", resultado = "";
-
 		try {
 			Cadena = this.leeSocket(skCliente, Cadena);
-//d			System.out.println(Cadena);
+//d			System.out.println("[" + Cadena + "]");
 			resultado = this.procesaCadena(Cadena);
 			Cadena = "" + resultado;
 			this.escribeSocket(skCliente, Cadena);
