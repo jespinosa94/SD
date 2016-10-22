@@ -1,12 +1,13 @@
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.sql.Time;
+import java.time.*;
+import java.util.*;
 
 public interface InterfazSensor extends Remote {
 	public int GetVolumen() throws RemoteException; //Entre 0 y 100
-	public Time GetFechaActual() throws RemoteException; //fecha y hora interna del sistema
-	public Time GetFechaUltimoCambio() throws RemoteException;
+	public LocalDate GetFechaActual() throws RemoteException; //fecha y hora interna del sistema
+	public LocalDateTime GetFechaUltimoCambio() throws RemoteException;
 	public int GetLED() throws RemoteException;
 	public void SetLED(int valor);
-	public String procesaSensor(String s) throws RemoteException;
+	public String leerSensor(String s) throws RemoteException;
 }

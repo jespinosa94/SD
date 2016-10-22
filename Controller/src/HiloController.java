@@ -1,16 +1,18 @@
 import java.lang.Exception;
 import java.net.Socket;
 import java.io.*;
+import java.rmi.*;
+import java.rmi.server.*;
 
 public class HiloController extends Thread {
 	private Socket skCliente;
-	private String IpRMI;
-	private String PuertoRMI;
+	private String ipRMI="";
+	private String puertoRMI="";
 	
-	public HiloController(Socket p_cliente, String p_IpRMI, String p_PuertoRMI) {
+	public HiloController(Socket p_cliente, String ipRMI, String puertoRMI) {
 		this.skCliente = p_cliente;
-		this.IpRMI = p_IpRMI;
-		this.PuertoRMI = p_PuertoRMI;
+		this.ipRMI = ipRMI;
+		this.puertoRMI = puertoRMI;
 	}
 	
 	public String leeSocket(Socket p_sk, String p_Datos) {
@@ -28,20 +30,24 @@ public class HiloController extends Thread {
 		try {
 			OutputStream aux = p_sk.getOutputStream();
 			PrintWriter flujo = new PrintWriter(new OutputStreamWriter(aux));
-//d			flujo.println(p_Datos);
+//d			flujo.println("{" + p_Datos + "}");
 			flujo.flush(); //limpiar buffer
 		} catch(Exception e) {
 			System.out.println("Error" + e.toString());
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void run() {
 		InterfazController sensor = null;
 		String Cadena = "";
 		
 		try {
 			Cadena = this.leeSocket(skCliente, Cadena);
-			System.out.println("Cadena que recibe el controller: " + Cadena);
+//d			System.out.println("Cadena que recibe el controller: " + Cadena); /* /controladorSD/volumen?Sonda=1 */
+			System.setSecurityManager(new RMISecurityManager());
+			String servidor = "rmi://" + ipRMI + ":" + puertoRMI;
+			String[] sensores = Naming.list(servidor);
 		} catch(Exception e) {
 			System.out.println("Error: " + e.toString());
 		}

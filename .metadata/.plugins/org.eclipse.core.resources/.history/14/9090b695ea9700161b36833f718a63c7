@@ -1,0 +1,50 @@
+import java.io.Serializable;
+import java.rmi.*;
+import java.rmi.server.*;
+import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+@SuppressWarnings("serial")
+public class ObjetoSensor extends UnicastRemoteObject implements InterfazSensor, Serializable {
+	
+	private int volumen;
+	private LocalDateTime fechaUltimoCambio;
+	private int luzLED;
+
+	public ObjetoSensor(String id) throws RemoteException {
+		super();
+		leerSensor("sensor" + id + ".txt");
+	}
+
+	public int GetVolumen() throws RemoteException {
+		return volumen;
+	}
+
+	public LocalDate GetFechaActual() throws RemoteException {
+		return LocalDate.now();
+	}
+
+	public LocalDateTime GetFechaUltimoCambio() throws RemoteException {
+		/*DateTimeFormatter formato;
+		formato = DateTimeFormatter.ofPattern("dd/MM/YYYY hh:mm:ss");*/
+		return fechaUltimoCambio;
+	}
+
+	public int GetLED() throws RemoteException {
+		return luzLED;
+	}
+
+	public void SetLED(int valor) {
+		luzLED = valor;
+	}
+	
+	public String leerSensor(String s) throws RemoteException {
+		String resultado = "";
+		
+		
+		return resultado;
+	}
+
+}

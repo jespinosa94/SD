@@ -96,7 +96,7 @@ public class HiloServidor extends Thread {
 			}
 		} else {
 			try {
-				this.escribeSocket(skCliente, "HTTP/1.1 405 Method Not Allowed\r\n" + "Content-Type: text/html\r\n" + "\r\n\r\n" + leerArchivo("/405.html") + "\r\n");
+				this.escribeSocket(skCliente, "HTTP/1.1 405 Method Not Allowed\r\n" + "Content-Type: text/html\r\n" + "\r\n\r\n" + leerArchivo("/405.html").substring(45));
 				skCliente.close();
 			} catch(Exception e) {
 				System.out.println("Error: " + e.toString());

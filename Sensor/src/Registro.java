@@ -6,8 +6,8 @@ public class Registro {
 		String URLRegistro;
 		try {
 			System.setSecurityManager(new RMISecurityManager());
-			ObjetoSensor objetoSensor = new ObjetoSensor();
-			URLRegistro = "/ObjetoSensor";
+			ObjetoSensor objetoSensor = new ObjetoSensor(args[0]);
+			URLRegistro = "/ObjetoSensor" + args[0];
 			Naming.rebind(URLRegistro, objetoSensor);
 			System.out.println("Servidor de objeto preparado.");
 		} catch (Exception e) {

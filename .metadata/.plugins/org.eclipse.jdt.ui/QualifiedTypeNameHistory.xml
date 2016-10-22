@@ -16,7 +16,14 @@
 <fullyQualifiedTypeName name="ObjetoSensor"/>
 <fullyQualifiedTypeName name="HiloController"/>
 <fullyQualifiedTypeName name="java.io.DataInputStream"/>
-<fullyQualifiedTypeName name="java.io.BufferedReader"/>
 <fullyQualifiedTypeName name="java.io.PrintWriter"/>
 <fullyQualifiedTypeName name="InterfazController"/>
+<fullyQualifiedTypeName name="java.rmi.RMISecurityManager"/>
+<fullyQualifiedTypeName name="java.rmi.Naming"/>
+<fullyQualifiedTypeName name="java.time.LocalDate"/>
+<fullyQualifiedTypeName name="java.time.format.DateTimeFormatter"/>
+<fullyQualifiedTypeName name="java.io.File"/>
+<fullyQualifiedTypeName name="java.io.FileReader"/>
+<fullyQualifiedTypeName name="java.io.BufferedReader"/>
+<fullyQualifiedTypeName name="java.time.LocalDateTime"/>
 </qualifiedTypeNameHistroy>
