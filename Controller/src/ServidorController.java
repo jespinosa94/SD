@@ -13,7 +13,7 @@ public class ServidorController {
 
 		try
 		{
-			if(args.length == 2) {	
+			if(args.length == 3) {	
 				puerto = args[0];
 				ServerSocket skServidor = new ServerSocket(Integer.parseInt(puerto));
 				System.out.println("Controlador escuchando en el puerto: " + puerto);
