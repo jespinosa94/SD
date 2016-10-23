@@ -3,8 +3,6 @@ import java.net.Socket;
 import java.io.*;
 import java.rmi.*;
 import java.rmi.server.*;
-import java.time.*;
-import java.util.*;
 
 public class HiloController extends Thread {
 	private Socket skCliente;
@@ -60,9 +58,9 @@ public class HiloController extends Thread {
 		return lectura;
 	}
 	
-	@SuppressWarnings("deprecation")
 	public String procesaPeticionRMI(InterfazSensor sensor, String servidor) {
 		String respuesta = "";
+		System.setSecurityManager(new RMISecurityManager());
 		if(atributoSensor.contains("volumen")) {
 			System.out.println("Controller pide el volumen " + "del sensor " + idSensor);
 				
@@ -82,60 +80,8 @@ public class HiloController extends Thread {
 			}
 			respuesta = cuerpo;
 		}
-		else if(atributoSensor.contains("fechaActual")) {
-			System.out.println("Controller pide la fecha actual del sensor " + idSensor);
-			String cuerpo ="";
-			cuerpo = leerArchivo("/index.html");
+		else if(atributoSensor.contains("fecha")) {
 			
-			try {
-				cuerpo+="<h1> Sensor " + idSensor + "</h1> </div>";
-				cuerpo+="<div class=\"color1 col-md-9\"> <h2> Fecha actual = " + sensor.GetFechaActual().toString() + "</h2> </div> </div> </div> </body> </html>";
-			} catch(Exception e) {
-				System.out.println(e.toString());
-			}
-			respuesta = cuerpo;
-		}
-		else if(atributoSensor.contains("ultimaFecha")) {
-			System.out.println("Controller pide la ultima fecha registrada del sensor " + idSensor);
-			String cuerpo ="";
-			cuerpo = leerArchivo("/index.html");
-			
-			try {
-				cuerpo+="<h1> Sensor " + idSensor + "</h1> </div>";
-				cuerpo+="<div class=\"color1 col-md-9\"> <h2> Ultima fecha registrada = " + sensor.GetFechaUltimoCambio().toString() + "</h2> </div> </div> </div> </body> </html>";
-			} catch(Exception e) {
-				System.out.println(e.toString());
-			}
-			respuesta = cuerpo;
-		}
-		else if(atributoSensor.contains("LED")) {
-			System.out.println("Controller pide el valor actual del led del sensor " + idSensor);
-			String cuerpo ="";
-			cuerpo = leerArchivo("/index.html");
-			
-			try {
-				cuerpo+="<h1> Sensor " + idSensor + "</h1> </div>";
-				cuerpo+="<div class=\"color1 col-md-9\"> <h2> Valor LED = " + Integer.toString(sensor.GetLED()) + "</h2> </div> </div> </div> </body> </html>";
-			} catch(Exception e) {
-				System.out.println(e.toString());
-			}
-			respuesta = cuerpo;
-		}
-		else if(atributoSensor.contains("set")) {
-			int valor =  Integer.parseInt(atributoSensor.split("=")[1]);
-			System.out.println("Controller pide modificar el valor actual del led del sensor " + idSensor + " a " + Integer.toString(valor));
-			String cuerpo ="";
-			cuerpo = leerArchivo("/index.html");
-			
-			try {
-				String nombreFichero = "/sensor" + idSensor + ".txt";
-				sensor.SetLED(valor, nombreFichero);
-				cuerpo+="<h1> Sensor " + idSensor + "</h1> </div>";
-				cuerpo+="<div class=\"color1 col-md-9\"> <h2> Valor LED cambiado a = " + Integer.toString(sensor.GetLED()) + "</h2> </div> </div> </div> </body> </html>";
-			} catch(Exception e) {
-				System.out.println(e.toString());
-			}
-			respuesta = cuerpo;
 		}
 		
 		return respuesta;
@@ -166,7 +112,6 @@ public class HiloController extends Thread {
 			idSensor = Cadena.split(" ")[1];
 			System.out.println("Valores que recibe el controller: " + "[Atributo = " + atributoSensor + "], [id = " + idSensor + "]"); /* /controladorSD/volumen?Sonda=1 */
 			
-			System.setSecurityManager(new RMISecurityManager());
 			sensor = (InterfazSensor) Naming.lookup(servidor + idSensor);			
 			datosSocket = procesaPeticionRMI(sensor, servidor);
 //d			System.out.print(datosSocket);

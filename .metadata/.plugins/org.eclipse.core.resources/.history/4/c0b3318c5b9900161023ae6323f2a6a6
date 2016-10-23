@@ -48,7 +48,11 @@ public class ObjetoSensor extends UnicastRemoteObject implements InterfazSensor,
 		String valorAnterior = Integer.toString(led);
 		led = valor;
 		File fichero = new File(System.getProperty("user.dir") + nombreFichero);
-		String lectura = "";	
+		String lectura = "";
+		/*
+		 * Busqueda del valor antiguo y sustitucion por el nuevo
+		 */
+		
 		
 		try {
 	        FileReader fr = new FileReader(fichero);

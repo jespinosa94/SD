@@ -115,23 +115,21 @@ public class HiloController extends Thread {
 			
 			try {
 				cuerpo+="<h1> Sensor " + idSensor + "</h1> </div>";
-				cuerpo+="<div class=\"color1 col-md-9\"> <h2> Valor LED = " + Integer.toString(sensor.GetLED()) + "</h2> </div> </div> </div> </body> </html>";
+				cuerpo+="<div class=\"color1 col-md-9\"> <h2> Valor LED = " + sensor.GetLED().toString() + "</h2> </div> </div> </div> </body> </html>";
 			} catch(Exception e) {
 				System.out.println(e.toString());
 			}
 			respuesta = cuerpo;
 		}
 		else if(atributoSensor.contains("set")) {
-			int valor =  Integer.parseInt(atributoSensor.split("=")[1]);
-			System.out.println("Controller pide modificar el valor actual del led del sensor " + idSensor + " a " + Integer.toString(valor));
+			int valor = atributoSensor.split("=")[1];
+			System.out.println("Controller pide modificar el valor actual del led del sensor " + idSensor);
 			String cuerpo ="";
 			cuerpo = leerArchivo("/index.html");
 			
 			try {
-				String nombreFichero = "/sensor" + idSensor + ".txt";
-				sensor.SetLED(valor, nombreFichero);
 				cuerpo+="<h1> Sensor " + idSensor + "</h1> </div>";
-				cuerpo+="<div class=\"color1 col-md-9\"> <h2> Valor LED cambiado a = " + Integer.toString(sensor.GetLED()) + "</h2> </div> </div> </div> </body> </html>";
+				cuerpo+="<div class=\"color1 col-md-9\"> <h2> Valor LED = " + sensor.GetLED().toString() + "</h2> </div> </div> </div> </body> </html>";
 			} catch(Exception e) {
 				System.out.println(e.toString());
 			}

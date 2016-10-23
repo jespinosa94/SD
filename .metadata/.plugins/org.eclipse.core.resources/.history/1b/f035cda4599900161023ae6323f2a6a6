@@ -47,32 +47,27 @@ public class ObjetoSensor extends UnicastRemoteObject implements InterfazSensor,
 	public void SetLED(int valor, String nombreFichero) throws RemoteException {
 		String valorAnterior = Integer.toString(led);
 		led = valor;
-		File fichero = new File(System.getProperty("user.dir") + nombreFichero);
-		String lectura = "";	
-		
+		String escritura = "";
+		File fichero = new File(System.getProperty("user.dir") /*+ "//resources"*/ + nombreFichero);
+		/*
+		 * Busqueda del valor antiguo y sustitucion por el nuevo
+		 */
 		try {
-	        FileReader fr = new FileReader(fichero);
-	        BufferedReader br = new BufferedReader(fr);
-
-	        String linea;
-	        while((linea = br.readLine()) != null) {
-	          if(linea.contains(valorAnterior)) {
-	            linea = linea.replace(valorAnterior, Integer.toString(valor));
-	          }
-	          lectura += linea + ",";
-	        }
-	        br.close();
-	        fr.close();
-	        
-	        String[] escritura = lectura.split(",");
-	        FileWriter fw = new FileWriter(fichero, false);
-	        for(String s: escritura) {
-	          fw.write(s);
-	          fw.write("\n");
-	          fw.flush();
-	        }
-
-	        fw.close();
+			FileReader fr = new FileReader(fichero);
+			FileWriter fw = new FileWriter(fichero);
+			BufferedReader br = new BufferedReader(fr);
+			BufferedWriter bw = new BufferedWriter(fw);
+			String linea;
+			while((linea = br.readLine()) != null) {
+				if(linea.contains("Led")) {
+					escritura = linea.replaceAll(valorAnterior, Integer.toString(valor));
+					bw.write(escritura);
+				}
+			}
+			fr.close();
+			fw.close();
+			br.close();
+			bw.close();
 		} catch(Exception e) {
 			System.out.println("Error: " + e.toString());
 		}
