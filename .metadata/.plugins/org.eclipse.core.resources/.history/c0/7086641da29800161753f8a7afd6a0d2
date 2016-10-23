@@ -8,8 +8,6 @@ public class HiloController extends Thread {
 	private Socket skCliente;
 	private String ipRMI="";
 	private String puertoRMI="";
-	private String atributoSensor = "";
-	private String idSensor = "";
 	
 	public HiloController(Socket p_cliente, String ipRMI, String puertoRMI) {
 		this.skCliente = p_cliente;
@@ -59,14 +57,11 @@ public class HiloController extends Thread {
 		
 		try {
 			Cadena = this.leeSocket(skCliente, Cadena);
-			//Desencapsulación de la información recibida por HttpServer
-			atributoSensor = Cadena.split(" ")[0];
-			idSensor = Cadena.split(" ")[1];
-			System.out.println("Valores que recibe el controller: " + "[Atributo = " + atributoSensor + "], [id = " + idSensor + "]"); /* /controladorSD/volumen?Sonda=1 */			
-			if(atributoSensor.contains("volumen")) {
+//d			System.out.println("Cadena que recibe el controller: " + Cadena); /* /controladorSD/volumen?Sonda=1 */			
+			if(Cadena.contains("volumen")) {
 				System.setSecurityManager(new RMISecurityManager());
-				System.out.println("Pedido el volumen " + idSensor);
-				sensor = (InterfazSensor) Naming.lookup(servidor + idSensor);	
+				System.out.println("Pedido el volumen " + Cadena.split("\\?")[1].split("=")[1]);
+				sensor = (InterfazSensor) Naming.lookup(servidor + Cadena.split("\\?")[1].split("=")[1]);	
 				System.out.println("[[" + sensor.GetVolumen() + "]]");
 				
 				String cuerpo = "";

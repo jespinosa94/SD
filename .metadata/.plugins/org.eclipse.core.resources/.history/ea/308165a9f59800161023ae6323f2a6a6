@@ -86,9 +86,9 @@ public class HiloServidor extends Thread {
 		if (s[0].equals("GET")) {
 //d			System.out.println("(" + s[1].toString() + ")");
 			if(s[1].contains("controladorSD")) {
-				String encapsulacion;
-				encapsulacion = s[1].split("\\?")[0].split("\\/")[2]; //Atributo de la sonda
-				encapsulacion += " " + s[1].split("\\?")[1].split("=")[1]; //id de la sonda
+				String[] encapsulacion;
+				encapsulacion[0] = s[1].split("\\?")[0]; //Atributo de la sonda
+				encapsulacion[1] = s[1].split("\\?")[1].split("=")[1]; //id de la sonda
 				resultado = ConectaController(encapsulacion);
 			} 
 			else if(s[1].equals("/")){	//La llamada con unicamente puerto e ip produce esta salida

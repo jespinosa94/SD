@@ -87,7 +87,7 @@ public class HiloServidor extends Thread {
 //d			System.out.println("(" + s[1].toString() + ")");
 			if(s[1].contains("controladorSD")) {
 				String encapsulacion;
-				encapsulacion = s[1].split("\\?")[0].split("\\/")[2]; //Atributo de la sonda
+				encapsulacion = s[1].split("\\?")[0]/*.split("\\/")[2]*/; //Atributo de la sonda
 				encapsulacion += " " + s[1].split("\\?")[1].split("=")[1]; //id de la sonda
 				resultado = ConectaController(encapsulacion);
 			} 

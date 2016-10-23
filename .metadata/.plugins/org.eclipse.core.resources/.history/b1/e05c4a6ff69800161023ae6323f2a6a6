@@ -62,12 +62,12 @@ public class HiloController extends Thread {
 			//Desencapsulación de la información recibida por HttpServer
 			atributoSensor = Cadena.split(" ")[0];
 			idSensor = Cadena.split(" ")[1];
-			System.out.println("Valores que recibe el controller: " + "[Atributo = " + atributoSensor + "], [id = " + idSensor + "]"); /* /controladorSD/volumen?Sonda=1 */			
-			if(atributoSensor.contains("volumen")) {
+			System.out.println("Cadena que recibe el controller: " + "[Atributo = " + atributoSensor + "], [id = " + idSensor + "]"); /* /controladorSD/volumen?Sonda=1 */			
+			if(Cadena.contains("volumen")) {
 				System.setSecurityManager(new RMISecurityManager());
-				System.out.println("Pedido el volumen " + idSensor);
-				sensor = (InterfazSensor) Naming.lookup(servidor + idSensor);	
-				System.out.println("[[" + sensor.GetVolumen() + "]]");
+				System.out.println("Pedido el volumen " + Cadena.split("\\?")[1].split("=")[1]);
+				sensor = (InterfazSensor) Naming.lookup(servidor + Cadena.split("\\?")[1].split("=")[1]);	
+//d				System.out.println("[[" + sensor.GetVolumen() + "]]");
 				
 				String cuerpo = "";
 				cuerpo+="<hr> 	</hr> <h2> Sensor "+Cadena.split("\\?")[1].split("=")[1]+"</h2>";
