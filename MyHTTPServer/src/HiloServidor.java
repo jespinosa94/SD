@@ -86,8 +86,14 @@ public class HiloServidor extends Thread {
 //d			System.out.println("(" + s[1].toString() + ")");
 			if(s[1].contains("controladorSD")) {
 				String encapsulacion;
-				encapsulacion = s[1].split("\\?")[0].split("\\/")[2]; //Atributo de la sonda
-				encapsulacion += " " + s[1].split("\\?")[1].split("=")[1]; //id de la sonda
+				//
+				if(s[1].contains("index")) {
+					encapsulacion = s[1];
+				} else {
+					encapsulacion = s[1].split("\\?")[0].split("\\/")[2]; //Atributo de la sonda
+					encapsulacion += " " + s[1].split("\\?")[1].split("=")[1]; //id de la sonda
+				}
+				//
 				resultado = ConectaController(encapsulacion);
 				String aux = resultado;
 				resultado = "HTTP/1.1 200 OK\r\n" + "Content-Type: text/html\r\n" + "\r\n\r\n" + aux + "\r\n" ;
@@ -116,7 +122,7 @@ public class HiloServidor extends Thread {
 		String Cadena = "", resultado = "";
 		try {
 			Cadena = this.leeSocket(skCliente, Cadena);
-//d			System.out.println("[" + Cadena + "]");
+			System.out.println("[" + Cadena + "]");
 			resultado = this.procesaCadena(Cadena);
 			Cadena =/*añadir cabeceras aqui?*/ resultado;
 //d			System.out.println(Cadena);

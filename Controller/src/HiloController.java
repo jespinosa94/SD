@@ -60,12 +60,44 @@ public class HiloController extends Thread {
 		return lectura;
 	}
 	
+	public String ObtenerIndiceSensores(String[] sensores, String servidor) {
+		String resultado = "";
+		InterfazSensor sensor = null;
+		System.out.println("Controller pide el indice de sensores");
+		String cuerpo = "";
+		int idcolor = 1;
+		try{
+			cuerpo = leerArchivo("/multi-index.html");
+			for(int i=0; i<sensores.length; i++) {
+				if(i<4) {
+					idcolor = i+1;
+				}
+//d				System.out.println("Sensor " + i + ": " + sensores[i]); //Sensor 0: //127.0.0.1:1099/ObjetoSensor1 (para cada linea)
+				idSensor = sensores[i].split("\\/")[3].replaceAll("ObjetoSensor", "");
+				sensor = (InterfazSensor) Naming.lookup(sensores[i]);
+				cuerpo += "<div class=\"container-fluid\"> <div class=\"color" + idcolor + " main row\"> <div class=\"col-md-3\">";
+				cuerpo += "<h1> Sensor " + idSensor + "</h1> </div>";
+				cuerpo += "<div class=\"color1 col-md-9\">";
+				cuerpo += "<h3> Volumen: " + sensor.GetVolumen() + "</h3>";
+				cuerpo += "<h3> Fecha actual: " + sensor.GetFechaActual().toString() + "</h3>";
+				cuerpo += "<h3> Ultima fecha: " + sensor.GetFechaUltimoCambio().toString() + "</h3>";
+				cuerpo += "<h3> LED: " + Integer.toString(sensor.GetLED()) + "</h3> </div></div></div>";
+				
+			}
+			cuerpo += "</body> </html>";
+		} catch(Exception e) {
+			System.out.println("Error al crear el indice de todos los sensores: " + e.toString());
+		}
+		resultado = cuerpo;
+		
+		return resultado;
+	}
+
 	@SuppressWarnings("deprecation")
 	public String procesaPeticionRMI(InterfazSensor sensor, String servidor) {
 		String respuesta = "";
 		if(atributoSensor.contains("volumen")) {
 			System.out.println("Controller pide el volumen " + "del sensor " + idSensor);
-				
 //d				System.out.println("[" + sensor.GetVolumen() + "]");
 			
 			String cuerpo = "";
@@ -137,14 +169,18 @@ public class HiloController extends Thread {
 			}
 			respuesta = cuerpo;
 		}
+		/*else if(atributoSensor.equals("/")) {
+			respuesta = ObtenerIndiceSensores(sensor, servidor);
+		}*/
 		
 		return respuesta;
 	}
 	
+	
 	@SuppressWarnings("deprecation")
 	public void run() {
 		InterfazSensor sensor = null;
-		String servidor = "rmi://" + ipRMI + ":" + puertoRMI + "/ObjetoSensor";
+		String servidor = "rmi://" + ipRMI + ":" + puertoRMI;
 		String Cadena = "";
 		String datosSocket = "";
 		
@@ -162,13 +198,22 @@ public class HiloController extends Thread {
 		try {
 			Cadena = this.leeSocket(skCliente, Cadena);
 			//Desencapsulación de la información recibida por HttpServer
-			atributoSensor = Cadena.split(" ")[0];
-			idSensor = Cadena.split(" ")[1];
-			System.out.println("Valores que recibe el controller: " + "[Atributo = " + atributoSensor + "], [id = " + idSensor + "]"); /* /controladorSD/volumen?Sonda=1 */
-			
-			System.setSecurityManager(new RMISecurityManager());
-			sensor = (InterfazSensor) Naming.lookup(servidor + idSensor);			
-			datosSocket = procesaPeticionRMI(sensor, servidor);
+//d			System.out.println("Cadena que recibe el controller: " + Cadena);
+			//
+			if(Cadena.contains("index")) {
+				System.setSecurityManager(new RMISecurityManager());
+				String[] sensores = Naming.list(servidor);
+				datosSocket = ObtenerIndiceSensores(sensores, servidor);
+			} else {
+				atributoSensor = Cadena.split(" ")[0];
+				idSensor = Cadena.split(" ")[1];
+				System.out.println("Valores que recibe el controller: " + "[Atributo = " + atributoSensor + "], [id = " + idSensor + "]"); /* /controladorSD/volumen?Sonda=1 */
+				
+				System.setSecurityManager(new RMISecurityManager());
+				sensor = (InterfazSensor) Naming.lookup(servidor + "/ObjetoSensor" + idSensor);
+				datosSocket = procesaPeticionRMI(sensor, servidor);
+			}
+			//			
 //d			System.out.print(datosSocket);
 			escribeSocket(skCliente, datosSocket);
 			skCliente.close();
