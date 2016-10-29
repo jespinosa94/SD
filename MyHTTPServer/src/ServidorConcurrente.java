@@ -6,27 +6,39 @@ import java.util.Set;
  * [Puerto del controlador], [Num de conexiones simultaneas]
  */
 public class ServidorConcurrente {
-	/**
-	 * @param args
-	 */
+	private static int hilosCorriendo = 0;
+	
 	@SuppressWarnings("resource")
-	public static void main(String[] args) throws ConnectException {
+	public static void main(String[] args) {
 		String puerto = "";
+		int conexionesMax = Integer.parseInt(args[3]);
 
 		try {
 			if(args.length == 4) {
-				//Conexiones con el hilo
 				puerto = args[0];
 				ServerSocket skServidor = new ServerSocket(Integer.parseInt(puerto));
-				System.out.println("Portal abierto: Escuchando en el puerto: " + puerto);
-
+				System.out.println("HttpServer listo, escuchando en el puerto: " + puerto);
 				//Comunicacion con el cliente
 				for(;;) {	//A la espera de que un cliente quiera conectarse
+					if(GetHilosCorriendo() >= conexionesMax) {
+						System.out.println("Conexiones maximas permitidas alcanzadas, espera a que se libere la cola");
+						Thread.sleep(5000);
+					} else {
+						Socket skCliente = skServidor.accept();
+						sumaHilosCorriendo();
+						System.out.println("HttpServer sirviendo petición: " + hilosCorriendo);
+						Thread t = new HiloServidor(skCliente, args[1], args[2]);
+						t.start();
+					}
+				}
+				
+				
+				/*for(;;) {	//A la espera de que un cliente quiera conectarse
 					Socket skCliente = skServidor.accept();
-					System.out.println("El portal ha sido atravesado: Sirviendo al cliente...");
+					System.out.println("HttpServer sirviendo al cliente...");
 					Thread t = new HiloServidor(skCliente, args[1], args[2]);
 					t.start();
-				}
+				}*/
 			} else {
 				System.out.println("Debe indicar el puerto de escucha del servidor,"
 									+ " IP del controlador,"
@@ -39,5 +51,17 @@ public class ServidorConcurrente {
 		} catch(Exception e){
 			System.out.println("Error intentando conectar con el cliente: " + e.toString());
 		}
+	}
+	
+	public static void sumaHilosCorriendo() {
+		hilosCorriendo += 1;
+	}
+	
+	public static void restaHilosCorriendo() {
+		hilosCorriendo = hilosCorriendo - 1;
+	}
+	
+	public static int GetHilosCorriendo() {
+		return hilosCorriendo;
 	}
 }

@@ -39,11 +39,11 @@ public class HiloServidor extends Thread {
 		}
 	}
 	
+	/*
+	 * Recibe cadena en la forma: "/controladorSD/volumen?Sonda=1"
+	 * hay que procesarla y conectar con el controlador
+	 */
 	private String ConectaController(String peticionController) {
-		/*
-		 * Recibe cadena en la forma: "/controladorSD/volumen?Sonda=1"
-		 * hay que procesarla y conectar con el controlador
-		 */
 		String resultado = "";
 		try {
 			Socket skControlador = new Socket(IpController, PuertoController);
@@ -117,16 +117,18 @@ public class HiloServidor extends Thread {
 		return resultado;
 	}
 
-
 	public void run() {
 		String Cadena = "", resultado = "";
 		try {
 			Cadena = this.leeSocket(skCliente, Cadena);
-			System.out.println("[" + Cadena + "]");
+//d			System.out.println("El hilo recibe la peticion [" + Cadena + "]");
 			resultado = this.procesaCadena(Cadena);
-			Cadena =/*añadir cabeceras aqui?*/ resultado;
-//d			System.out.println(Cadena);
+			Cadena = resultado;
+//d			System.out.println("Resultado que envia el hilo al Servidor Concurrente: " + Cadena);
 			this.escribeSocket(skCliente, Cadena);
+//dMaxCli   Thread.sleep(20000);
+			ServidorConcurrente.restaHilosCorriendo();
+			System.out.println("Cliente concluye la peticion, conexiones ocupadas actualmente: " + ServidorConcurrente.GetHilosCorriendo());
 			skCliente.close();
 		} catch(Exception e) {
 			System.out.println("Error ejecutando el thread: " + e.toString());
